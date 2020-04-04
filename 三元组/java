@@ -1,0 +1,115 @@
+https://mp.weixin.qq.com/s/Dx8N6agTuwnoNbVFe2nthQ  《为什么ConcurrentHashMap的读操作不需要加锁》
+ConcurrentHashMap
+1.7 分段锁
+1.8 红黑树优化链表 cas + synchronized
+
+ConcurrentHashMap 关联 volidate
+读操作不加锁 因为数组使用voliate修饰, 保证数组扩容的时候可见性
+
+
+https://www.cnblogs.com/xiaoxi/p/6170590.html  《Java集合之LinkedHashMap》
+LRU 关联(实例)  LinkedHashMap
+LinkedHashMap构造方法中的accessOrder, 
+true 所有的Entry按照访问的顺序排列, 
+false 所有的Entry按照插入的顺序排列
+
+
+https://blog.csdn.net/LouisQMei/article/details/80764150 《Exception和Error有什么区别？》
+Throwable 包含 Exception Error
+
+Exception 包含 RuntimeException 非运行时异常
+
+Exception 关联 Error
+
+
+https://blog.csdn.net/lov2_y1y1/article/details/87919005 《谈谈final，finally，finalize的区别，有什么不同》
+final  
+修饰类(不可被继承)，方法(不可被重写)，变量(不可被修改)
+
+finally
+保证代码一定会执行
+
+finalize 关联 gc
+gc回收前调用的方法
+
+
+https://www.jianshu.com/p/86efa167a627 《强引用、软引用、弱引用、幻象引用有什么区别》
+对象引用 类型包含 强引用 软引用 幻想引用
+
+
+https://blog.csdn.net/yiguang_820/article/details/93849455 《String、StringBuffer、StringBuilder有什么区别》
+AbstractStringBuilder 包含(继承自) StringBuffer StringBuilder
+
+String StringBuffer StringBuilder 关联 final
+
+StringBuffer 关联 StringBuilder
+StringBuffer使用synchronized保证线程安全 
+
+String 关联 StringBuffer
+String内部的char[] 是final的,拼接的时候频繁操作会产生大量无用对象 
+StringBuffer 内部的char[] 不是final修饰的)
+
+
+https://www.jianshu.com/p/e20dab96df8a 《动态代理是基于什么原理》
+动态代理 关联 反射
+
+代理 包含 动态代理 静态代理
+
+静态代理 关联(实例) RMI
+
+动态代理 关联(实例) JDK动态代理 cglib
+
+JDK动态代理 关联 cglib
+JDK动态代理使用 代码简单,依赖少,但是基于接口 cglib通过生成子类的方式避开接口限制
+
+
+https://blog.csdn.net/yakoo5/article/details/9099133/ 《CGLib动态代理原理及实现》
+字节码 关联(实例) cglib
+
+
+https://blog.csdn.net/chenliguan/article/details/53888018 《Java基础之int和Integer有什么区别》
+java数据类型 包含 基本数据类型 引用数据类型
+
+基本数据类型 包含 boolean byte int char long short double float
+
+引用数据类型 包含 数组 类 接口
+
+类 包含 包装类
+
+包装类 关联 基本数据类型
+两者利用 自动装箱/拆箱机制互相转换
+包装类需要实例化才能使用
+包装类的默认值为null
+
+包装类 关联 静态常量池
+new 出来的两个包装类实例一定不相等
+不是new出来的两个包装类实例 可能因为都在静态常量池cache数组中, 所以相等 int的范围默认为[-128, 127]
+
+
+https://www.cnblogs.com/CherryTab/p/12115897.html 《对比Vector、ArrayList、LinkedList有何区别》
+List 包含(继承) Vector ArrayList LinkedList 
+
+Vector 关联 ArrayList
+内部都以数组形式存储 Vecotr线程安全 扩容时会提高1倍 ArrayList线程不安全 扩容时会提高0.5倍
+
+LinkedList 关联 Vector ArrayList
+LinkedList进行节点插入、删除却要高效得多  随机访问性能则要比动态数组慢
+
+Collection 包含(继承) List, Set, Queue 
+
+Queue 包含(继承) Deque
+
+
+https://www.jianshu.com/p/46a99edece8a 《对比Hashtable、HashMap、TreeMap有什么不同》
+Map 包含(继承) Hashtable、HashMap、TreeMap
+
+Hashtable 关联 hashmap
+Hashtable 线程安全，不支持null键和值
+HashMap 支持null键和值，线程不安全
+
+hashmap 包含 负载因子 容量 树化
+
+
+
+
+
