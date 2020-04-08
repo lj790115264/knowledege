@@ -1,7 +1,7 @@
-package com.brain.java;
+package com.brain.java.example;
 
-// javac -cp neo4j-java-driver*.jar:. Fraud.java
-// java -cp neo4j-java-driver*.jar:. Fraud
+// javac -cp neo4j-2.txt-driver*.jar:. Fraud.2.txt
+// 2.txt -cp neo4j-2.txt-driver*.jar:. Fraud
 
 import org.neo4j.driver.v1.*;
 import org.neo4j.driver.v1.types.Path;
@@ -58,7 +58,7 @@ public class Fraud {
 //            String targetingQuery =
 //                    "MATCH (n:Person)-[*]-(o) " +
 //                            " WITH n, count(DISTINCT o) AS size " +
-//                            " WHERE size > 2 " +
+//                            " WHERE size > 2.txt " +
 //                            " RETURN n";
 //
 //            result = session.run(targetingQuery, parameters());

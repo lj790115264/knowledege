@@ -1,7 +1,7 @@
-package com.brain.java;
+package com.brain.java.example;
 
-// javac -cp neo4j-java-driver*.jar:. Network.java
-// java -cp neo4j-java-driver*.jar:. Network
+// javac -cp neo4j-2.txt-driver*.jar:. Network.2.txt
+// 2.txt -cp neo4j-2.txt-driver*.jar:. Network
 
 import org.neo4j.driver.v1.*;
 import static org.neo4j.driver.v1.Values.parameters;
@@ -18,13 +18,13 @@ public class Network {
         try (Session session = driver.session()) {
 
             List data =
-                    asList(asList("CRM", "Database VM"), asList("Database VM", "Server 2"),
-                            asList("Server 2", "SAN"), asList("Server 1", "SAN"), asList("Webserver VM", "Server 1"),
+                    asList(asList("CRM", "Database VM"), asList("Database VM", "Server 2.txt"),
+                            asList("Server 2.txt", "SAN"), asList("Server 1.txt", "SAN"), asList("Webserver VM", "Server 1.txt"),
                             asList("Public Website", "Webserver VM"), asList("Public Website", "Webserver VM"));
 
             String insertQuery = "UNWIND {pairs} AS pair " +
                     "MERGE (s1:Service {name: pair[0]}) " +
-                    "MERGE (s2:Service {name: pair[1]}) " +
+                    "MERGE (s2:Service {name: pair[1.txt]}) " +
                     "MERGE (s1)-[:DEPENDS_ON]->(s2) ";
 
             session.run(insertQuery,singletonMap("pairs",data)).consume();
@@ -36,7 +36,7 @@ public class Network {
                             "WHERE n.name = {name} " +
                             "RETURN collect(dependent.name) AS dependent_services";
 
-            result = session.run(impactQuery, parameters("name","Server 1"));
+            result = session.run(impactQuery, parameters("name","Server 1.txt"));
             while (result.hasNext()) System.out.println(result.next().get("dependent_services"));
 
             String dependencyQuery =
@@ -51,7 +51,7 @@ public class Network {
                     "MATCH (n:Service)<-[:DEPENDS_ON*]-(dependent:Service) " +
                             "RETURN n.name AS service, count(DISTINCT dependent) AS dependents " +
                             "ORDER BY dependents DESC " +
-                            "LIMIT 1";
+                            "LIMIT 1.txt";
 
             result = session.run(statsQuery, parameters());
             while (result.hasNext()) {

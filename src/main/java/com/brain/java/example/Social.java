@@ -1,4 +1,4 @@
-package com.brain.java;
+package com.brain.java.example;
 
 
 
@@ -24,7 +24,7 @@ public class Social {
 
             String insertQuery = "UNWIND {pairs} as pair " +
                     "MERGE (p1:Person {name:pair[0]}) " +
-                    "MERGE (p2:Person {name:pair[1]}) " +
+                    "MERGE (p2:Person {name:pair[1.txt]}) " +
                     "MERGE (p1)-[:KNOWS]-(p2);";
 
             session.run(insertQuery,singletonMap("pairs",data)).consume();

@@ -1,0 +1,54 @@
+https://blog.csdn.net/ty13572053785/article/details/82859394 《Java提供了哪些IO方式？NIO如何实现复用？》
+IO 包含 同步阻塞IO 同步非阻塞IO IO多路复用 异步非阻塞IO
+
+同步阻塞IO 关联（实例) JavaIO
+
+同步非阻塞IO 关联（实例）NIO
+
+IO多路复用 关联（实例） NIO
+
+异步非阻塞IO 关联（实例）NIO 2
+
+JavaIO 关联 NIO
+JavaIO面向流，是阻塞IO，一个线程处理一个连接
+NIO面向缓冲区，非阻塞IO，单线程管理多个连接
+
+NIO核 关联 Channel,Buffer,Selector
+
+
+https://www.jianshu.com/p/5092a511904a 《java有几种文件拷贝方式？哪一种最高效？》
+操作系统 包含 用户态空间 内核态空间
+
+NIO 关联 零拷贝
+
+
+https://blog.csdn.net/qq_41936805/article/details/94905395 《synchronized和ReentrantLock有什么区别呢？》
+synchronized 关联 ReentrantLock
+synchronized语义和synchronized基本是相同 
+synchronize只能是非公平的,ReentrantLock是粒度更细的synchronize,可以带超时的获取锁尝试,中断请求
+
+线程安全 包含（特性） 原子性 可见性 有序性
+
+可见性 关联 volatile
+
+
+https://blog.csdn.net/qq_41936805/article/details/95331051 《synchronized底层如何实现？什么是锁的升级、降级？》
+synchronized 关联 Monitor
+
+Monitor 关联 互斥锁
+jdk1.6以前 Monitor的实现依赖于操作系统内部的互斥锁，因为需要用户态到内核态的切换，所以效率低
+
+Monitor 包含 偏斜锁 轻量级锁 重量级锁
+
+轻量级锁 关联 MarkWord CAS
+
+Lock 关联 ReadWriteLock
+ReadWriteLock 并不是 实现Lock的接口
+
+Lock 包含 ReentrantLock
+
+
+文章 - artid， 标题 ，链接
+简述 - 文章 ， 知识点 ， 关联
+关联关系 - cid
+知识点 -  kid
