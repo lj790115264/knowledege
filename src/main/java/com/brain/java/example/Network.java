@@ -14,7 +14,7 @@ public class Network {
 
     public static void main(String...args) {
         Config noSSL = Config.build().withEncryptionLevel(Config.EncryptionLevel.NONE).toConfig();
-        Driver driver = GraphDatabase.driver("bolt://localhost",AuthTokens.basic("neo4j","loveyou55!"),noSSL); // <password>
+        Driver driver = GraphDatabase.driver("bolt://10.243.101.56",AuthTokens.basic("neo4j","loveyou55!"),noSSL); // <password>
         try (Session session = driver.session()) {
 
             List data =
@@ -24,7 +24,7 @@ public class Network {
 
             String insertQuery = "UNWIND {pairs} AS pair " +
                     "MERGE (s1:Service {name: pair[0]}) " +
-                    "MERGE (s2:Service {name: pair[1.txt]}) " +
+                    "MERGE (s2:Service {name: pair[1]}) " +
                     "MERGE (s1)-[:DEPENDS_ON]->(s2) ";
 
             session.run(insertQuery,singletonMap("pairs",data)).consume();
@@ -51,7 +51,7 @@ public class Network {
                     "MATCH (n:Service)<-[:DEPENDS_ON*]-(dependent:Service) " +
                             "RETURN n.name AS service, count(DISTINCT dependent) AS dependents " +
                             "ORDER BY dependents DESC " +
-                            "LIMIT 1.txt";
+                            "LIMIT 1";
 
             result = session.run(statsQuery, parameters());
             while (result.hasNext()) {
