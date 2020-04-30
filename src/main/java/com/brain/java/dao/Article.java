@@ -7,14 +7,14 @@ import org.springframework.data.elasticsearch.annotations.Document;
 /**
  * @program: java
  * @description:
- * @author: liyx
+ * @author: lanj
  * @create: 2020-04-22 15:20
  */
 @Document(indexName = "article", type = "article")
 @Data
 public class Article {
     @Id
-    private Long id;
+    private String id;
     private String title;
     private String url;
 }

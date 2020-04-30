@@ -1,2 +1,5 @@
 .idea/
 *.iml
+front/node_modules/
+target/classes/com/brain/java/dto/request/QueryNodeRequest.class
+target/

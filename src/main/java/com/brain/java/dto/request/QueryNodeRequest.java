@@ -9,6 +9,6 @@ import lombok.Data;
  * @create: 2020-04-22 15:41
  */
 @Data
-public class QueryArticleRequest {
+public class QueryNodeRequest {
     private String content;
 }

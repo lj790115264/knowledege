@@ -7,18 +7,19 @@ import org.springframework.data.elasticsearch.annotations.Document;
 /**
  * @program: java
  * @description:
- * @author: liyx
+ * @author: lanj
  * @create: 2020-04-22 15:23
  */
-@Document(indexName = "description", type = "description")
+@Document(indexName = "note", type = "note")
 @Data
-public class Description {
+public class Note {
+
     @Id
     private Long id;
     private Long articleId;
+    // 0 node 1 relation
     private Integer type;
     private Long nodeId;
-    private Long associateId;
     private String content;
 }
 

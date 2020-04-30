@@ -6,9 +6,10 @@ import lombok.Data;
  * @program: java
  * @description:
  * @author: lanj
- * @create: 2020-04-22 15:41
+ * @create: 2020-04-26 14:49
  */
 @Data
-public class QueryArticleRequest {
-    private String content;
+public class QueryNoteRequest {
+    private Long id;
+    private Integer type;
 }

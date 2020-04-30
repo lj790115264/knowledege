@@ -27,7 +27,7 @@ public class Social {
                     "MERGE (p2:Person {name:pair[1.txt]}) " +
                     "MERGE (p1)-[:KNOWS]-(p2);";
 
-            session.run(insertQuery,singletonMap("pairs",data)).consume();
+            session.run(insertQuery, singletonMap("pairs",data)).consume();
 
             StatementResult result;
 

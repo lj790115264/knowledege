@@ -36,7 +36,7 @@ public class Network {
                             "WHERE n.name = {name} " +
                             "RETURN collect(dependent.name) AS dependent_services";
 
-            result = session.run(impactQuery, parameters("name","Server 1.txt"));
+            result = session.run(impactQuery, parameters("name","Serve"));
             while (result.hasNext()) System.out.println(result.next().get("dependent_services"));
 
             String dependencyQuery =

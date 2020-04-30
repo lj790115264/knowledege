@@ -14,20 +14,18 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
  * @program: java
  * @description:
- * @author: liyx
+ * @author: lanj
  * @create: 2020-04-22 11:36
  */
 @RestController
+@CrossOrigin
 @RequestMapping("article")
 public class ArticleController {
 

@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * @program: java
  * @description:
- * @author: liyx
+ * @author: lanj
  * @create: 2020-04-22 15:34
  */
 public interface KNodeRepository extends CrudRepository<KNode, Long> {

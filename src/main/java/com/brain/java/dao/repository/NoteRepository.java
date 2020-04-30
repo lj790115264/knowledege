@@ -1,14 +1,13 @@
 package com.brain.java.dao.repository;
 
-import com.brain.java.dao.Article;
+import com.brain.java.dao.Note;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  * @program: java
  * @description:
  * @author: lanj
- * @create: 2020-04-22 15:34
+ * @create: 2020-04-26 14:46
  */
-public interface ArticleRepository extends CrudRepository<Article, Long> {
-
+public interface NoteRepository  extends CrudRepository<Note, Long> {
 }

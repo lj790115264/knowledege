@@ -17,7 +17,7 @@ public class Fraud {
     public static void main(String...args) {
 
         Config noSSL = Config.build().withEncryptionLevel(Config.EncryptionLevel.NONE).toConfig();
-        Driver driver = GraphDatabase.driver("bolt://localhost",AuthTokens.basic("neo4j","loveyou55!"),noSSL); // <password>
+        Driver driver = GraphDatabase.driver("bolt://10.243.101.56",AuthTokens.basic("neo4j","loveyou55!"),noSSL); // <password>
         try (Session session = driver.session()) {
 
             String insertQuery =
