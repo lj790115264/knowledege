@@ -1,9 +1,8 @@
 server:
   port: 8089
 neo4j:
-  url: bolt://10.243.101.56:7687
+  url: bolt://10.243.106.202:7687
   username: neo4j
   password: loveyou55!
 es:
-  url: 172.16.59.80:9200
-#  url: 10.243.128.86:9200
+  url: 10.243.106.202:9200

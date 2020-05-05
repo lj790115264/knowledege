@@ -10,12 +10,12 @@ import com.brain.java.dto.request.*;
 import com.brain.java.dto.response.QueryRelationNode;
 import com.brain.java.dto.response.QueryRelationResponse;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.types.Node;
-import org.neo4j.driver.v1.types.Path;
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.Session;
+import org.neo4j.driver.types.Node;
+import org.neo4j.driver.types.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -51,7 +51,7 @@ public class KNodeController {
         String name = request.getName();
         try (Session session = driver.session()) {
             String insertQuery = "merge (n:node:" + name + " {name:'" + name + "'}) return n";
-            StatementResult run = session.run(insertQuery);
+            Result run = session.run(insertQuery);
             List<Record> list = run.list();
             Long id = list.get(0).get("n").asNode().id();
             KNode node = new KNode();
@@ -77,8 +77,8 @@ public class KNodeController {
                 } else {
                     properties = String.format("{name:'%s'}", relation);
                 }
-                String insertQuery = "merge (r:relation:" + relation + " " + properties + ") return r";
-                StatementResult run = session.run(insertQuery);
+                String insertQuery = "create (r:relation:" + relation + " " + properties + ") return r";
+                Result run = session.run(insertQuery);
                 List<Record> list = run.list();
                 Long id = list.get(0).get("r").asNode().id();
                 KNode node = new KNode();
@@ -93,7 +93,7 @@ public class KNodeController {
             try (Session session = driver.session()) {
                 String insertQuery = String.format("match (r), (n)  where id(r)=%s and id(n)=%s " +
                         "merge p=(r)-[k:%s]->(n) return p", request.getId(), relationNodeId, relation);
-                StatementResult run = session.run(insertQuery);
+                Result run = session.run(insertQuery);
                 List<Record> list = run.list();
                 Long relationId = list.get(0).get("p").asPath().relationships().iterator().next().id();
                 Relation r = new Relation();
@@ -108,7 +108,7 @@ public class KNodeController {
             try (Session session = driver.session()) {
                 String insertQuery = String.format("match (r), (n)  where id(r)=%s and id(n)=%s " +
                         "merge p=(r)-[k:%s]->(n) return p", relationNodeId, child, relation);
-                StatementResult run = session.run(insertQuery);
+                Result run = session.run(insertQuery);
                 List<Record> list = run.list();
                 Long relationId = list.get(0).get("p").asPath().relationships().iterator().next().id();
                 Relation r = new Relation();
@@ -141,7 +141,7 @@ public class KNodeController {
         Map<Long, QueryRelationResponse> responseMap = new HashMap<>();
 
         try (Session session = driver.session()) {
-            StatementResult run = session.run(query);
+            Result run = session.run(query);
             List<Record> list = run.list();
             for (Record record : list) {
                 Iterator<Path.Segment> p = record.get("p").asPath().iterator();

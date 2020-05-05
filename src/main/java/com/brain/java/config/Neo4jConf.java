@@ -1,9 +1,9 @@
 package com.brain.java.config;
 
-import org.neo4j.driver.v1.AuthTokens;
-import org.neo4j.driver.v1.Config;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.GraphDatabase;
+import org.neo4j.driver.AuthTokens;
+import org.neo4j.driver.Config;
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.GraphDatabase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +28,7 @@ public class Neo4jConf {
 
     @Bean
     public Driver driver() {
-        Config noSSL = Config.build().withEncryptionLevel(Config.EncryptionLevel.NONE).toConfig();
-        Driver driver = GraphDatabase.driver(neo4jUrl, AuthTokens.basic(username, password), noSSL);
+        Driver driver = GraphDatabase.driver(neo4jUrl, AuthTokens.basic(username, password));
         return driver;
     }
 

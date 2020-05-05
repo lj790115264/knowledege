@@ -4,13 +4,13 @@ import com.brain.java.dto.request.IncludeRelationListRequest;
 import com.brain.java.dto.response.AntvEdges;
 import com.brain.java.dto.response.AntvNode;
 import com.brain.java.dto.response.IncludeRelationListResponse;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.types.Node;
-import org.neo4j.driver.v1.types.Path;
-import org.neo4j.driver.v1.types.Relationship;
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Session;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.types.Node;
+import org.neo4j.driver.types.Path;
+import org.neo4j.driver.types.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,15 +33,23 @@ public class FrontController {
     @PostMapping
     public Object getIncludeRelationList(@RequestBody IncludeRelationListRequest request) {
 
+        String query;
+        // 查询包含关系 4度以内
+        if (request.getIsInclude()) {
+            query  = String.format("match (n) where id(n) = %s \n" +
+                    " match p=(n)-[:包含*..4]-() return p", request.getId());
+        } else {
+            // 关联关系 2度以内
+            query  = String.format("match (n) where id(n) = %s \n" +
+                    " match p=(n)-[*2]-() return p", request.getId());
+        }
 
-        String query = String.format("match (n) where id(n) = %s \n" +
-                " match p=(r)-[*4]-() return p", request.getId());
 
         Map<String, AntvNode> nodeHashMap = new HashMap<>();
         Map<String, AntvEdges> edgesHashMap = new HashMap<>();
         IncludeRelationListResponse relationListResponse = new IncludeRelationListResponse();
         try (Session session = driver.session()) {
-            StatementResult run = session.run(query);
+            Result run = session.run(query);
             List<Record> list = run.list();
             for (Record record: list) {
                 Path p = record.get("p").asPath();
@@ -49,7 +57,7 @@ public class FrontController {
                 while (iterator.hasNext()) {
                     Node next = iterator.next();
                     AntvNode node = new AntvNode();
-                    node.setId("node-" + next.id());
+                    node.setId(next.id() + "");
                     node.setName((String) next.asMap().get("name"));
 
                     node.setType(next.hasLabel("node") ? "node" : "relation");
@@ -60,9 +68,9 @@ public class FrontController {
                 while (iteratorRelation.hasNext()) {
                     Relationship next = iteratorRelation.next();
                     AntvEdges edges = new AntvEdges();
-                    edges.setId("node-" + next.id());
-                    edges.setSource("node-" + next.startNodeId());
-                    edges.setTarget("node-" + next.endNodeId());
+                    edges.setId(next.id() + "");
+                    edges.setSource(next.startNodeId() + "");
+                    edges.setTarget(next.endNodeId() + "");
                     edges.setType(next.type());
                     edgesHashMap.put(edges.getId(), edges);
                 }

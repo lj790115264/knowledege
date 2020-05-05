@@ -13,7 +13,7 @@ JavaIO 关联 NIO
 JavaIO面向流，是阻塞IO，一个线程处理一个连接
 NIO面向缓冲区，非阻塞IO，单线程管理多个连接
 
-NIO核 关联 Channel,Buffer,Selector
+NIO 关联 Channel,Buffer,Selector
 
 
 https://www.jianshu.com/p/5092a511904a 《java有几种文件拷贝方式？哪一种最高效？》

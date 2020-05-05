@@ -1,5 +1,9 @@
+@import '~antd/dist/antd.css';
 .App {
   font-family: sans-serif;
   text-align: center;
-  height: 100vh;
+}
+.graphin-context-menu .ant-menu-root, .graphin-context-menu .ant-menu-sub {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }

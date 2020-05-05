@@ -11,4 +11,6 @@ import lombok.Data;
 @Data
 public class IncludeRelationListRequest {
     private Long id;
+    // 查询包含关系 4度以内 ，关联关系 2度以内
+    private Boolean isInclude = true;
 }
