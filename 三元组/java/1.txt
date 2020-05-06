@@ -45,8 +45,6 @@ Monitor 包含 偏斜锁 轻量级锁 重量级锁
 Lock 关联 ReadWriteLock
 ReadWriteLock 并不是 实现Lock的接口
 
-Lock 包含 ReentrantLock
-
 
 文章 - artid， 标题 ，链接
 简述 - 文章 ， 知识点 ， 关联

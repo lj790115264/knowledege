@@ -50,7 +50,7 @@ public class KNodeController {
 
         String name = request.getName();
         try (Session session = driver.session()) {
-            String insertQuery = "merge (n:node:" + name + " {name:'" + name + "'}) return n";
+            String insertQuery = "merge (n:node:`" + name + "` {name:'" + name + "'}) return n";
             Result run = session.run(insertQuery);
             List<Record> list = run.list();
             Long id = list.get(0).get("n").asNode().id();

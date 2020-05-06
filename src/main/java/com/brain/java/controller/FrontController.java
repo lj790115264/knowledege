@@ -38,6 +38,8 @@ public class FrontController {
         if (request.getIsInclude()) {
             query  = String.format("match (n) where id(n) = %s \n" +
                     " match p=(n)-[:包含*..4]-() return p", request.getId());
+
+            query = "match (n) match p=(n)-[*..8]-() return p";
         } else {
             // 关联关系 2度以内
             query  = String.format("match (n) where id(n) = %s \n" +

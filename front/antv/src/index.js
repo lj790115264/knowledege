@@ -5,6 +5,7 @@ import Graphin from '@antv/graphin';
 import { ContextMenu } from '@antv/graphin-components';
 import './styles.css';
 import "@antv/graphin/dist/index.css"; // 引入Graphin CSS
+import '@antv/graphin-components/dist/index.css'; 
 import { Row, Col, Layout, AutoComplete, message } from 'antd';
 import axios from 'axios';
 import { Input } from 'antd';
@@ -23,7 +24,6 @@ class App extends React.Component {
         key: "discovery",
         title: "扩展关系",
         visible: true,
-        iconType: "select",
         onClick: (e) => {
 
           const nodes = e.graph.findAllByState('node', 'selected');
@@ -40,6 +40,7 @@ class App extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.getNodeList = this.getNodeList.bind(this);
     this.addNodeList = this.addNodeList.bind(this);
+    this.getNodeList(0, true)
   }
 
 
@@ -61,19 +62,28 @@ class App extends React.Component {
               </AutoComplete>
             </Col>
           </Row>
-          <Graphin data={this.state.data}
+          <Graphin className="graphin" data={this.state.data}
             layout={{
               name: 'force',
               options: {
                 defSpringLen: (_edge, source, target) => {
-                  /** 默认返回的是 200 的弹簧长度 */
-    
-                  /** 如果你要想要产生聚类的效果，可以考虑 根据边两边节点的度数来动态设置边的初始化长度：度数越小，则边越短 */
-                  const nodeSize = 30;
-                  const Sdegree = source.data.layout?.degree;
-                  const Tdegree = target.data.layout?.degree;
-                  const minDegree = Math.min(Sdegree, Tdegree);
-                  return minDegree < 3 ? nodeSize * 5 : minDegree * nodeSize * 2;
+                  console.log(_edge)
+                  console.log(source)
+                  console.log(target)
+
+                  if (target.data.type == "relation" && target.data.layout.degree == 2) {
+                    return 50;
+                  }
+
+                  if (source.data.type == "relation" && source.data.layout.degree == 2) {
+                    return 50;
+                  }
+
+                  if (source.data.type == "relation") {
+                    return 20
+                  } 
+                  
+                  return 200
                 },
               },
             }} >
@@ -119,6 +129,14 @@ class App extends React.Component {
         if (nodesMap[node.id]) {
           return;
         }
+        let nodeSize, primaryColor;
+        if (node.type == 'node') {
+          nodeSize = 40
+          primaryColor = "#91D5FF"
+        } else {
+          nodeSize = 5
+          primaryColor = "#535353"
+        }
         let nodeObj = {
           id: node.id,
           label: node.name,
@@ -128,9 +146,11 @@ class App extends React.Component {
             label: node.name,
             type: node.type
           },
-          shape: "cricle",
+          shape: "CircleNode",
           style: {
-            fill: "white"
+            nodeSize: nodeSize,
+            primaryColor: primaryColor,
+            fontSize: 12
           }
         }
         nodesMap[node.id] = nodeObj
@@ -144,7 +164,7 @@ class App extends React.Component {
           eid: edge.id,
           source: edge.source,
           target: edge.target,
-          label: edge.type,
+          label: "",
           data: {
             source: edge.source,
             target: edge.target,
@@ -152,7 +172,7 @@ class App extends React.Component {
           },
           shape: "line",
           style: {
-            stroke: "blue"
+            stroke: "#535353"
           }
         }
         edgesMap[edge.id] = edgeObj
@@ -178,9 +198,18 @@ class App extends React.Component {
       let edges = Object.assign([], this.state.data.edges);
       let nodesMap = Object.assign([], this.state.data.nodesMap);
       let edgesMap = Object.assign([], this.state.data.edgesMap);
+      
       data.nodes.forEach(node => {
         if (nodesMap[node.id]) {
           return;
+        }
+        let nodeSize, primaryColor;
+        if (node.type == 'node') {
+          nodeSize = 40
+          primaryColor = "#91D5FF"
+        } else {
+          nodeSize = 5
+          primaryColor = "#535353"
         }
         let nodeObj = {
           id: node.id,
@@ -191,9 +220,11 @@ class App extends React.Component {
             label: node.name,
             type: node.type
           },
-          shape: "cricle",
+          shape: "CircleNode",
           style: {
-            fill: "white"
+            nodeSize: nodeSize,
+            primaryColor: primaryColor,
+            fontSize: 12
           }
         }
         nodesMap[node.id] = nodeObj
@@ -207,7 +238,7 @@ class App extends React.Component {
           eid: edge.id,
           source: edge.source,
           target: edge.target,
-          label: edge.type,
+          label: "",
           data: {
             source: edge.source,
             target: edge.target,
@@ -215,14 +246,12 @@ class App extends React.Component {
           },
           shape: "line",
           style: {
-            stroke: "blue"
+            stroke: "#535353"
           }
         }
         edgesMap[edge.id] = edgeObj
         edges.push(edgeObj);
       });
-      console.log(nodes)
-      console.log(edges)
       this.setState({
         data: {
           edges: edges,

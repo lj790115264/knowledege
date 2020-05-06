@@ -3,8 +3,8 @@ ConcurrentHashMap
 1.7 分段锁
 1.8 红黑树优化链表 cas + synchronized
 
-ConcurrentHashMap 关联 volidate
-读操作不加锁 因为数组使用voliate修饰, 保证数组扩容的时候可见性
+ConcurrentHashMap 关联 volatile
+读操作不加锁 因为数组使用volatile修饰, 保证数组扩容的时候可见性
 
 
 https://www.cnblogs.com/xiaoxi/p/6170590.html  《Java集合之LinkedHashMap》
