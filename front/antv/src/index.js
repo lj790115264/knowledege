@@ -67,9 +67,6 @@ class App extends React.Component {
               name: 'force',
               options: {
                 defSpringLen: (_edge, source, target) => {
-                  console.log(_edge)
-                  console.log(source)
-                  console.log(target)
 
                   if (target.data.type == "relation" && target.data.layout.degree == 2) {
                     return 50;
@@ -82,7 +79,7 @@ class App extends React.Component {
                   if (source.data.type == "relation") {
                     return 20
                   } 
-                  
+
                   return 200
                 },
               },
@@ -188,6 +185,15 @@ class App extends React.Component {
       });
     })
   }
+  computeDegree(edges) {
+    var degree = {}
+    for (var i = 0; i < edges.length; i++) {
+      let edge = edges[i]
+      degree[edge.source] = degree[edge.source] ? degree[edge.source] + 1 : 1
+      degree[edge.target] = degree[edge.target] ? degree[edge.target] + 1 : 1
+    }
+    return degree
+  }
   getNodeList(id, isInclude) {
     axios.post("http://localhost:8089/front", {
       id: id,
@@ -252,6 +258,13 @@ class App extends React.Component {
         edgesMap[edge.id] = edgeObj
         edges.push(edgeObj);
       });
+      var degreeMap = this.computeDegree(edges)
+      edges.forEach(edge => {
+        let target = nodesMap[edge.target]
+        if (target.type == "relation" && degreeMap[target.id] > 2) {
+          edge.style.stroke = "red"
+        } 
+      })
       this.setState({
         data: {
           edges: edges,

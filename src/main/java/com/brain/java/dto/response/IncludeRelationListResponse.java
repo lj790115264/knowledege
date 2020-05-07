@@ -17,4 +17,5 @@ public class IncludeRelationListResponse {
     List<AntvNode> nodes = new ArrayList<>();
 
     List<AntvEdges> edges = new ArrayList<>();
+
 }
