@@ -5,8 +5,9 @@ import Graphin from '@antv/graphin';
 import { ContextMenu } from '@antv/graphin-components';
 import './styles.css';
 import "@antv/graphin/dist/index.css"; // 引入Graphin CSS
-import '@antv/graphin-components/dist/index.css'; 
-import { Row, Col, Layout, AutoComplete, message } from 'antd';
+import '@antv/graphin-components/dist/index.css';
+import { Row, Col, Layout, AutoComplete, message, Drawer, Button, Radio, Space } from 'antd';
+
 import axios from 'axios';
 import { Input } from 'antd';
 const { Header, Content } = Layout;
@@ -14,6 +15,9 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
+      visible: false,
+      placement: "right",
+      nodeTitle: "",
       data: {
         nodes: [],
         nodesMap: {},
@@ -27,12 +31,29 @@ class App extends React.Component {
         onClick: (e) => {
 
           const nodes = e.graph.findAllByState('node', 'selected');
+
           if (nodes.length === 0) {
             message.info(`oh,你好像没有选中节点...`);
           } else {
-            const nodeId = nodes[0].get('id');
-            this.addNodeList(nodeId, false);
+            if (nodes[0].get('model').type != 'node') {
+              message.info(`关系节点无法扩展，请选择一般节点`);
+            } else {
+              const nodeId = nodes[0].get('id');
+              this.addNodeList(nodeId, false);
+            }
           }
+        }
+      },
+      {
+        key: "detail",
+        title: "节点明细",
+        visible: true,
+        onClick: (e) => {
+          const nodes = e.graph.findAllByState('node', 'selected');
+          console.log(nodes)
+          this.setState({
+            visible: true,
+          });
         }
       }]
     }
@@ -40,7 +61,8 @@ class App extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.getNodeList = this.getNodeList.bind(this);
     this.addNodeList = this.addNodeList.bind(this);
-    this.getNodeList(0, true)
+    this.onClose = this.onClose.bind(this);
+    this.getNodeList(0, true);
   }
 
 
@@ -78,7 +100,7 @@ class App extends React.Component {
 
                   if (source.data.type == "relation") {
                     return 20
-                  } 
+                  }
 
                   return 200
                 },
@@ -88,11 +110,28 @@ class App extends React.Component {
             <ContextMenu options={this.state.menus} />
           </Graphin>
         </Content>
+        <Drawer
+          title={this.state.nodeTitle}
+          placement={this.state.placement}
+          closable={false}
+          onClose={this.onClose}
+          visible={this.state.visible}
+        >
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+        </Drawer>
       </Layout>
 
     );
 
   }
+
+  onClose() {
+    this.setState({
+      visible: false,
+    });
+  };
 
   onSelect(value, option) {
     this.getNodeList(option.id, true)
@@ -204,7 +243,7 @@ class App extends React.Component {
       let edges = Object.assign([], this.state.data.edges);
       let nodesMap = Object.assign([], this.state.data.nodesMap);
       let edgesMap = Object.assign([], this.state.data.edgesMap);
-      
+
       data.nodes.forEach(node => {
         if (nodesMap[node.id]) {
           return;
@@ -263,7 +302,7 @@ class App extends React.Component {
         let target = nodesMap[edge.target]
         if (target.type == "relation" && degreeMap[target.id] > 2) {
           edge.style.stroke = "red"
-        } 
+        }
       })
       this.setState({
         data: {

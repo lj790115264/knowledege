@@ -70,6 +70,7 @@ public class KNodeController {
         Long relationNodeId = request.getRelationId();
         String relation = request.getRelation();
         if (null == relationNodeId) {
+            // 创建关系节点
             try (Session session = driver.session()) {
                 String properties;
                 if (null != request.getRelationRemark() && !"".equals(request.getRelationRemark())) {

@@ -1,19 +1,18 @@
 package com.brain.java.controller;
 
 import com.brain.java.dao.Article;
+import com.brain.java.dao.ArticleKNode;
+import com.brain.java.dao.repository.ArticleKNodeRepository;
 import com.brain.java.dao.repository.ArticleRepository;
 import com.brain.java.dto.request.AddArticleRequest;
 import com.brain.java.dto.request.QueryArticleRequest;
+import com.brain.java.dto.request.RelateArticleRequest;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
-import org.springframework.data.querydsl.QPageRequest;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +30,9 @@ public class ArticleController {
 
     @Autowired
     private ArticleRepository articleRepository;
+
+    @Autowired
+    private ArticleKNodeRepository articleKNodeRepository;
 
     @Autowired
     private ElasticsearchOperations elasticsearchOperations;
@@ -54,5 +56,22 @@ public class ArticleController {
                 .build();
         List<Article> articles = elasticsearchOperations.queryForList(searchQuery, Article.class);
         return articles;
+    }
+
+    /**
+     * 将已有的文章关联到节点上
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("relate")
+    public Object add(@RequestBody RelateArticleRequest request) {
+
+        ArticleKNode articleKNode = new ArticleKNode();
+        articleKNode.setArticleId(request.getArticleId());
+        articleKNode.setNodeId(request.getNodeId());
+
+        ArticleKNode save = articleKNodeRepository.save(articleKNode);
+        return save;
     }
 }
