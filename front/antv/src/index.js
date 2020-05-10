@@ -6,11 +6,15 @@ import { ContextMenu } from '@antv/graphin-components';
 import './styles.css';
 import "@antv/graphin/dist/index.css"; // 引入Graphin CSS
 import '@antv/graphin-components/dist/index.css';
-import { Row, Col, Layout, AutoComplete, message, Drawer, Button, Radio, Space } from 'antd';
+import { Row, Col, Layout, AutoComplete, message, Drawer, Typography, Card, Space, Tag } from 'antd';
+import {
+  ReadOutlined
+} from '@ant-design/icons';
 
 import axios from 'axios';
 import { Input } from 'antd';
 const { Header, Content } = Layout;
+const { Text } = Typography;
 class App extends React.Component {
   constructor() {
     super();
@@ -18,6 +22,7 @@ class App extends React.Component {
       visible: false,
       placement: "right",
       nodeTitle: "",
+      showNode: {},
       data: {
         nodes: [],
         nodesMap: {},
@@ -50,7 +55,29 @@ class App extends React.Component {
         visible: true,
         onClick: (e) => {
           const nodes = e.graph.findAllByState('node', 'selected');
-          console.log(nodes)
+
+          if (nodes.length === 0) {
+            message.info(`oh,你好像没有选中节点...`);
+            return
+          }
+          if (nodes[0].get("model").type == "node") {
+            // 获取当前节点的所有关系节点
+            axios.post("http://localhost:8089/node/relations", {
+              id: nodes[0].get("id")
+            }).then((res) => {
+              console.log(nodes[0].get("model"))
+              // 根据关系节点获取关系节点上关联的文章
+              this.setState({
+                showNode: {
+                  data: res.data,
+                  node: nodes[0].get("model"),
+                  type: "node"
+                }
+              })
+            });
+          }
+
+
           this.setState({
             visible: true,
           });
@@ -110,17 +137,44 @@ class App extends React.Component {
             <ContextMenu options={this.state.menus} />
           </Graphin>
         </Content>
-        <Drawer
-          title={this.state.nodeTitle}
-          placement={this.state.placement}
-          closable={false}
-          onClose={this.onClose}
-          visible={this.state.visible}
-        >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Drawer>
+        {this.state.showNode.node && (
+          <Drawer
+            width={720}
+            title={this.state.showNode.node.label}
+            placement={this.state.placement}
+            closable={false}
+            onClose={this.onClose}
+            visible={this.state.visible}
+          >
+            <Space direction="vertical" className="drawer-space">
+              {
+
+                this.state.showNode.data.map((item, index) => {
+
+                  return <Space direction="vertical" key={index.toString()} className="space">
+                      <Text> 关系名称：{item.relationRemark ? item.relation + '(' + item.relationRemark + ')' : item.relation}</Text>
+                      <Text >相关知识点:</Text >
+                      <div>
+                        {
+                          item.list.map((node, i) => {
+                            return <Tag key={i.toString()}>{node.nodeName}</Tag  >
+                          })
+                        }
+                      </div>
+                      {
+                        item.articles.length > 0 && <Text >相关文章</Text>
+                      }
+                      {item.articles.map((article, i) => {
+                        return <Text key={i.toString()}><a target="_blank" href={article.url}>{article.title}</a></Text>
+                      })}
+                    </Space>
+                })
+
+              }
+            </Space>
+          </Drawer>
+        )
+        }
       </Layout>
 
     );

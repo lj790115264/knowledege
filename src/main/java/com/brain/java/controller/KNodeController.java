@@ -1,14 +1,13 @@
 package com.brain.java.controller;
 
-import com.brain.java.dao.KNode;
-import com.brain.java.dao.Note;
-import com.brain.java.dao.Relation;
+import com.brain.java.dao.*;
 import com.brain.java.dao.repository.KNodeRepository;
 import com.brain.java.dao.repository.NoteRepository;
 import com.brain.java.dao.repository.RelationRepository;
 import com.brain.java.dto.request.*;
 import com.brain.java.dto.response.QueryRelationNode;
 import com.brain.java.dto.response.QueryRelationResponse;
+import com.brain.java.util.MapUtil;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Record;
@@ -21,9 +20,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -137,7 +138,7 @@ public class KNodeController {
     @PostMapping("relations")
     public Object relations(@RequestBody QueryRelationRequest request) {
 
-        String query = String.format("match (r) where id(r)=%s match p=(r)-[*2]->() return p", request.getId());
+        String query = String.format("match (r) where id(r)=%s match p=(r)-[*2]-() return p", request.getId());
 
         Map<Long, QueryRelationResponse> responseMap = new HashMap<>();
 
@@ -154,11 +155,13 @@ public class KNodeController {
                 QueryRelationResponse response = responseMap.get(id);
                 if (null == response) {
                     Map<String, Object> map1 = end.asMap();
+
                     response = QueryRelationResponse.builder()
                             .relationId(id)
                             .relation((String) map1.get("name"))
                             .relationRemark((String) map1.get("remark"))
                             .list(new ArrayList<>())
+                            .articles(new ArrayList<>())
                             .build();
                     responseMap.put(id, response);
                 }
@@ -173,6 +176,40 @@ public class KNodeController {
                     QueryRelationNode node =
                             QueryRelationNode.builder().relationId(subRelationId).nodeId(subNodeId).nodeName(subNodeName).build();
                     response.getList().add(node);
+                }
+            }
+        }
+
+        Set<Long> nodeIds = responseMap.keySet();
+        if (!CollectionUtils.isEmpty(nodeIds)) {
+            SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withQuery(QueryBuilders.termsQuery("nodeId", nodeIds))
+                    .build();
+            List<ArticleKNode> articleKNodes = elasticsearchOperations.queryForList(searchQuery, ArticleKNode.class);
+            Map<String, List<ArticleKNode>> articleKNodeMap = MapUtil.listToMapList(articleKNodes, (MapUtil<ArticleKNode>) o -> o.getNodeId() + "");
+            if (!CollectionUtils.isEmpty(articleKNodes)) {
+                List<String> articleIds = articleKNodes.stream().map(i -> i.getArticleId()).collect(Collectors.toList());
+                String[] articleIdsArr = articleIds.toArray(new String[articleIds.size()]);
+                searchQuery = new NativeSearchQueryBuilder()
+                        .withQuery(QueryBuilders.termsQuery("_id", articleIdsArr))
+                        .build();
+                List<Article> articles = elasticsearchOperations.queryForList(searchQuery, Article.class);
+                if (!CollectionUtils.isEmpty(articles)) {
+                    Map<String, Article> stringArticleMap = MapUtil.listToMap(articles, (MapUtil<Article>) o -> o.getId());
+                    for (Map.Entry<Long, QueryRelationResponse> entry : responseMap.entrySet()) {
+                        Long key = entry.getKey();
+                        QueryRelationResponse response = entry.getValue();
+                        List<ArticleKNode> articleKNodesList = articleKNodeMap.get(key + "");
+                        if (!CollectionUtils.isEmpty(articleKNodesList)) {
+                            for (ArticleKNode articleKNode : articleKNodesList) {
+                                String articleId = articleKNode.getArticleId();
+                                Article article = stringArticleMap.get(articleId);
+                                if (null != article) {
+                                    response.getArticles().add(article);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

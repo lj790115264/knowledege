@@ -55,15 +55,18 @@
       >
         <div>
           <el-button type="text" @click="editRelation(relation)">添加到该关系中</el-button>
+          <el-button type="text" @click="addArticle(relation)">添加文章</el-button>
           <el-button type="text" @click="noteList(relation)">查看注解列表</el-button>
           <el-button type="text" @click="addNote(relation)">添加注解</el-button>
         </div>
         <div>
-          <span class="text item"  v-for="child in relation.list" :key="child.relationId">{{child.nodeName}}</span>
+          <span
+            class="text item"
+            v-for="child in relation.list"
+            :key="child.relationId"
+          >{{child.nodeName}}</span>
         </div>
-        <div v-for="note in relation.noteList" :key="note.id">
-          {{note.content}}
-        </div>
+        <div v-for="note in relation.noteList" :key="note.id">{{note.content}}</div>
       </el-collapse-item>
     </el-collapse>
 
@@ -78,6 +81,24 @@
         <el-button type="primary" @click="addRelation()">添加</el-button>
       </el-col>
     </el-row>
+
+    <el-row type="flex" class="row-bg" justify="space-between">
+      <el-col :span="8">
+        <el-input type="input" autosize placeholder="搜索文章" v-model="articleContent"></el-input>
+      </el-col>
+      <el-col :span="4">
+        <el-button type="primary" @click="querySearchAsync()">查询</el-button>
+      </el-col>
+    </el-row>
+    <el-table
+      :data="articleTableData"
+      highlight-current-row
+      @current-change="handleCurrentChange"
+      style="width: 100%"
+    >
+      <el-table-column prop="title" label="标题" width="180"></el-table-column>
+      <el-table-column prop="url" label="地址"></el-table-column>
+    </el-table>
   </div>
 </template>
 
@@ -98,13 +119,54 @@ export default {
       childNodeList: [],
       masterLoading: false,
       childLoading: false,
-      masterRelations: []
+      masterRelations: [],
+      articleContent: "",
+      articleTableData: [],
+      selectedArticle: {}
     };
   },
   props: {
     msg: String
   },
   methods: {
+    handleCurrentChange(val) {
+      this.selectedArticle = val;
+    },
+    querySearchAsync() {
+      if (!this.articleContent) {
+        this.articleTableData = [];
+        return;
+      }
+
+      axios
+        .post("http://localhost:8089/article/list", {
+          content: this.articleContent
+        })
+        .then(response => {
+          this.articleTableData = response.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    // 关系添加文章关联
+    addArticle(relation) {
+      if (!this.selectedArticle || !this.selectedArticle.id) {
+        this.$message('未选中文章');
+        return;
+      }
+      axios
+        .post("http://localhost:8089/article/relate", {
+          articleId: this.selectedArticle.id,
+          nodeId: relation.relationId
+        })
+        .then(response => {
+          this.masterNodeList = response.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     remoteMaterNode(query) {
       axios
         .post("http://localhost:8089/node/list", {
@@ -173,7 +235,7 @@ export default {
         .then(response => {
           relation.noteList = response.data;
           this.$forceUpdate();
-          console.log(relation)
+          console.log(relation);
         })
         .catch(function(error) {
           console.log(error);
@@ -192,7 +254,7 @@ export default {
           axios
             .post("http://localhost:8089/node/note/relation/add", obj)
             .then(() => {
-              this.noteList(relation)
+              this.noteList(relation);
             })
             .catch(function(error) {
               console.log(error);

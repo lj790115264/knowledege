@@ -10,3 +10,18 @@
 #graphin-container {
   height: 800px;
 }
+.tab {
+  margin-right: 5px;
+}
+.space {
+  box-sizing: border-box;
+  padding: 10px;
+  width: 100%;
+  background: #fff;
+}
+.drawer-space {
+  width: 100%;
+} 
+.drawer-my {
+  background: #f0f0f0;
+} 

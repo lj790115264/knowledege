@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class RelateArticleRequest {
 
-    private Long articleId;
+    private String articleId;
     private Long nodeId;
 
 }

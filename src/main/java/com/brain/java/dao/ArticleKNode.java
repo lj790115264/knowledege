@@ -14,7 +14,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Data
 public class ArticleKNode {
     @Id
-    private Long id;
-    private Long articleId;
+    private String id;
+    private String articleId;
     private Long nodeId;
 }
