@@ -7,7 +7,7 @@
     </el-row>
 
     <el-row type="flex" class="row-bg" justify="space-between">
-      <el-col :span="8">
+      <el-col :span="12">
         <el-input type="input" autosize placeholder="地址" v-model="url"></el-input>
       </el-col>
       <el-col :span="4">
@@ -16,7 +16,7 @@
     </el-row>
 
     <el-row type="flex" class="row-bg" justify="space-between">
-      <el-col :span="8">
+      <el-col :span="12">
         <el-input type="input" autosize placeholder="搜索文章" v-model="content"></el-input>
       </el-col>
       <el-col :span="4">
@@ -29,10 +29,11 @@
         <el-table-column
           prop="title"
           label="标题"
-          width="180">
+          width="380">
         </el-table-column>
         <el-table-column
           prop="url"
+          width="480"
           label="地址">
         </el-table-column>
       </el-table>

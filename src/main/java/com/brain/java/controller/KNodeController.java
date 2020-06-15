@@ -235,7 +235,7 @@ public class KNodeController {
     public Object addNote(@RequestBody NoteRelationRequest request) {
 
         Note note = new Note();
-        note.setType(0);
+        note.setType(request.getType());
         note.setNodeId(request.getId());
         note.setContent(request.getContent());
         noteRepository.save(note);

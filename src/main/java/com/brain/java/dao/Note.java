@@ -17,7 +17,7 @@ public class Note {
     @Id
     private Long id;
     private Long articleId;
-    // 0 node 1 relation
+    // 1 node 0 relation
     private Integer type;
     private Long nodeId;
     private String content;

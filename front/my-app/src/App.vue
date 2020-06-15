@@ -4,7 +4,7 @@
     <el-main>
 
       <el-row type="flex" class="row-bg" justify="center">
-        <el-col :span="12">
+        <el-col :span="18">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="新增文章" name="first">
               <AddArticle></AddArticle>

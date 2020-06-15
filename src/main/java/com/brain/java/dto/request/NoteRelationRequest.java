@@ -12,4 +12,5 @@ import lombok.Data;
 public class NoteRelationRequest {
     private Long id;
     private String content;
+    private Integer type;
 }

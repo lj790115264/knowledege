@@ -249,7 +249,9 @@ export default {
         .then(({ value }) => {
           var obj = {
             id: relation.relationId,
-            content: value
+            content: value,
+            // 1 node 0 relation
+            type: 0
           };
           axios
             .post("http://localhost:8089/node/note/relation/add", obj)

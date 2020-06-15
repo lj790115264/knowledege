@@ -16,36 +16,95 @@
         <el-button type="primary" @click="querySearchAsync()">查询</el-button>
       </el-col>
     </el-row>
-    <el-table
-      :data="tableData"
-      style="width: 100%">
-        <el-table-column
-          prop="name"
-          label="名称"
-          width="180">
-        </el-table-column>
+    <el-table :data="tableData" style="width: 100%">
+      <el-table-column prop="name" label="名称" width="180"></el-table-column>
+      <el-table-column prop="name" label fixed="right" width="180">
+        <template slot-scope="scope">
+          <el-button @click="handleClick(scope.row)" type="text" size="small">注解</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-dialog title="注解" :visible.sync="dialogFormVisible">
+      <el-table :data="nodeData">
+        <el-table-column property="content" label width="600"></el-table-column>
       </el-table>
+      <el-button @click="addNote()" type="primary" size="small">添加注解</el-button>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 const axios = require("axios");
 export default {
-  name: 'HelloWorld',
+  name: "HelloWorld",
   props: {
     msg: String
   },
   data() {
     return {
+      addNoteContent: "",
       name: "",
       content: "",
-      tableData: []
+      dialogFormVisible: false,
+      tableData: [],
+      nodeData: [],
+      dialogRow: ""
     };
   },
   methods: {
+    // 新增节点注解
+    addNote() {
+      this.$prompt("请输入注解", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+        .then(({ value }) => {
+          var obj = {
+            id: this.dialogRow.id,
+            content: value,
+            // 1 node 0 relation
+            type: 1
+          };
+          axios
+            .post("http://localhost:8089/node/note/relation/add", obj)
+            .then(() => {
+              this.noteList();
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消输入"
+          });
+        });
+    },
+    handleClick(row) {
+      this.dialogRow = row;
+      this.dialogFormVisible = true;
+      this.noteList();
+    },
+    noteList() {
+      var obj = {
+        type: 1,
+        id: this.dialogRow.id
+      };
+      axios
+        .post("http://localhost:8089/node/note/relation", obj)
+        .then(response => {
+          this.nodeData = response.data; 
+          this.$forceUpdate();
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     querySearchAsync() {
       if (!this.content) {
-        this.tableData = []
+        this.tableData = [];
         return;
       }
 
@@ -53,32 +112,32 @@ export default {
         .post("http://localhost:8089/node/list", {
           content: this.content
         })
-        .then((response) => {
-          this.tableData = response.data
+        .then(response => {
+          this.tableData = response.data;
         })
         .catch(function(error) {
           console.log(error);
         });
     },
     addNode() {
-      if ((this.name == "")) {
+      if (this.name == "") {
         return;
       }
       axios
         .post("http://localhost:8089/node/add", {
           name: this.name
         })
-        .then((response) => {
+        .then(response => {
           this.name = "";
           console.log(response);
-          this.querySearchAsync()
+          this.querySearchAsync();
         })
         .catch(function(error) {
           console.log(error);
         });
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
