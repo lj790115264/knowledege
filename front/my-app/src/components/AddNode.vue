@@ -21,6 +21,7 @@
       <el-table-column prop="name" label fixed="right" width="180">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row)" type="text" size="small">注解</el-button>
+          <el-button @click="articleList(scope.row)" type="text" size="small">文章</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -30,6 +31,35 @@
         <el-table-column property="content" label width="600"></el-table-column>
       </el-table>
       <el-button @click="addNote()" type="primary" size="small">添加注解</el-button>
+    </el-dialog>
+
+    <el-dialog title="文章" :visible.sync="articleDialogFormVisible">
+      <el-row type="flex" class="row-bg" justify="space-between">
+        <el-col :span="8">
+          <el-input type="input" autosize placeholder="搜索文章" v-model="articleContent"></el-input>
+        </el-col>
+        <el-col :span="4">
+          <el-button type="primary" @click="querySearchAsyncArticle()">查询</el-button>
+        </el-col>
+        <el-col :span="4">
+          <el-button @click="addArticle()" type="primary" size="small">添加文章</el-button>
+        </el-col>
+      </el-row>
+
+      <el-table
+        :data="articleTableData"
+        highlight-current-row
+        @current-change="handleCurrentChange"
+        style="width: 100%"
+      >
+        <el-table-column prop="title" label="标题" width="180"></el-table-column>
+        <el-table-column prop="url" label="地址"></el-table-column>
+      </el-table>
+
+      <el-table :data="articleData">
+        <el-table-column prop="title" label="标题" width="180"></el-table-column>
+        <el-table-column prop="url" label="地址"></el-table-column>
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -49,10 +79,18 @@ export default {
       dialogFormVisible: false,
       tableData: [],
       nodeData: [],
-      dialogRow: ""
+      dialogRow: "",
+      articleDialogFormVisible: false,
+      articleData: [],
+      articleContent: "",
+      selectedArticle: {},
+      articleTableData: []
     };
   },
   methods: {
+    handleCurrentChange(val) {
+      this.selectedArticle = val;
+    },
     // 新增节点注解
     addNote() {
       this.$prompt("请输入注解", "提示", {
@@ -87,6 +125,57 @@ export default {
       this.dialogFormVisible = true;
       this.noteList();
     },
+    // 节点添加文章关联
+    addArticle() {
+      if (!this.selectedArticle || !this.selectedArticle.id) {
+        this.$message("未选中文章");
+        return;
+      }
+      console.log(this.selectedArticle)
+      // axios
+      //   .post("http://localhost:8089/article/relate", {
+      //     articleId: this.selectedArticle.id,
+      //     nodeId: relation.relationId
+      //   })
+      //   .then(response => {
+      //     this.masterNodeList = response.data;
+      //   })
+      //   .catch(function(error) {
+      //     console.log(error);
+      //   });
+    },
+    articleList() {
+      this.articleDialogFormVisible = true;
+
+      // axios
+      //   .post("http://localhost:8089/node/note/relation", obj)
+      //   .then(response => {
+      //     this.nodeData = response.data;
+      //     this.$forceUpdate();
+      //   })
+      //   .catch(function(error) {
+      //     console.log(error);
+      //   });
+    },
+
+    querySearchAsyncArticle() {
+      if (!this.articleContent) {
+        this.articleTableData = [];
+        return;
+      }
+
+      axios
+        .post("http://localhost:8089/article/list", {
+          content: this.articleContent
+        })
+        .then(response => {
+          this.articleTableData = response.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
     noteList() {
       var obj = {
         type: 1,
@@ -95,7 +184,7 @@ export default {
       axios
         .post("http://localhost:8089/node/note/relation", obj)
         .then(response => {
-          this.nodeData = response.data; 
+          this.nodeData = response.data;
           this.$forceUpdate();
         })
         .catch(function(error) {
