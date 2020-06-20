@@ -178,7 +178,6 @@ export default {
     // 关系添加文章关联
     addArticle() {
       let relation = this.relationData.relationId;
-
       if (!this.selectedArticle || !this.selectedArticle.id) {
         this.$message("未选中文章");
         return;
@@ -186,10 +185,12 @@ export default {
       axios
         .post("http://localhost:8089/article/relate", {
           articleId: this.selectedArticle.id,
-          nodeId: relation.relationId
+          nodeId: relation,
+          type: 0,
         })
-        .then(response => {
-          this.masterNodeList = response.data;
+        .then(() => {
+          this.relationList()
+          this.articleDialogFormVisible = false;
         })
         .catch(function(error) {
           console.log(error);

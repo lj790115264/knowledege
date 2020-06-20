@@ -11,5 +11,6 @@ import lombok.Data;
 @Data
 public class QueryNoteRequest {
     private Long id;
+    // 1 node 0 relation
     private Integer type;
 }

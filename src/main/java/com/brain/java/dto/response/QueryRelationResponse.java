@@ -1,6 +1,7 @@
 package com.brain.java.dto.response;
 
 import com.brain.java.dao.Article;
+import com.brain.java.dao.Note;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,4 +23,5 @@ public class QueryRelationResponse {
     private String relationRemark;
     private List<QueryRelationNode> list;
     private List<Article> articles;
+    private List<Note> notes;
 }

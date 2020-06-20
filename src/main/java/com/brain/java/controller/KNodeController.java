@@ -162,6 +162,7 @@ public class KNodeController {
                             .relationRemark((String) map1.get("remark"))
                             .list(new ArrayList<>())
                             .articles(new ArrayList<>())
+                            .notes(new ArrayList<>())
                             .build();
                     responseMap.put(id, response);
                 }
@@ -182,8 +183,10 @@ public class KNodeController {
 
         Set<Long> nodeIds = responseMap.keySet();
         if (!CollectionUtils.isEmpty(nodeIds)) {
+            // 获得这些个关系的关联文章
             SearchQuery searchQuery = new NativeSearchQueryBuilder()
                     .withQuery(QueryBuilders.termsQuery("nodeId", nodeIds))
+                    .withQuery(QueryBuilders.termsQuery("type", "0"))
                     .build();
             List<ArticleKNode> articleKNodes = elasticsearchOperations.queryForList(searchQuery, ArticleKNode.class);
             Map<String, List<ArticleKNode>> articleKNodeMap = MapUtil.listToMapList(articleKNodes, (MapUtil<ArticleKNode>) o -> o.getNodeId() + "");
@@ -209,6 +212,27 @@ public class KNodeController {
                                 }
                             }
                         }
+                    }
+                }
+            }
+
+            // 获得这些关系的关联注解
+            searchQuery = new NativeSearchQueryBuilder()
+                    .withQuery(QueryBuilders.boolQuery()
+                            .must(QueryBuilders.termsQuery("nodeId", nodeIds))
+                            .must(QueryBuilders.termQuery("type", 0))
+                    )
+                    .withPageable(PageRequest.of(0, 10))
+                    .build();
+            List<Note> notes = elasticsearchOperations.queryForList(searchQuery, Note.class);
+            if (!CollectionUtils.isEmpty(notes)) {
+                Map<String, List<Note>> notesMap = MapUtil.listToMapList(notes, (MapUtil<Note>) o -> o.getNodeId() + "");
+                for (Map.Entry<Long, QueryRelationResponse> entry : responseMap.entrySet()) {
+                    Long key = entry.getKey();
+                    QueryRelationResponse response = entry.getValue();
+                    List<Note> noteList = notesMap.get(key + "");
+                    if (!CollectionUtils.isEmpty(noteList)) {
+                        response.getNotes().addAll(noteList);
                     }
                 }
             }

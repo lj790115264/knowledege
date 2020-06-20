@@ -17,4 +17,6 @@ public class ArticleKNode {
     private String id;
     private String articleId;
     private Long nodeId;
+    // 1 node 0 relation
+    private Integer type;
 }
