@@ -6,7 +6,7 @@ import { ContextMenu } from '@antv/graphin-components';
 import './styles.css';
 import "@antv/graphin/dist/index.css"; // 引入Graphin CSS
 import '@antv/graphin-components/dist/index.css';
-import { Row, Col, Layout, AutoComplete, message, Drawer, Typography, Card, Space, Tag } from 'antd';
+import { Row, Col, Layout, AutoComplete, message, Drawer, Typography, Card, Space, Tag, Radio } from 'antd';
 import {
   ReadOutlined
 } from '@ant-design/icons';
@@ -19,10 +19,13 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
+      included: true,
       visible: false,
       placement: "right",
       nodeTitle: "",
       showNode: {},
+      showNodeNote: [],
+      showNodeArticle: [],
       data: {
         nodes: [],
         nodesMap: {},
@@ -75,6 +78,29 @@ class App extends React.Component {
                 }
               })
             });
+
+            // 获取当前节点的文章
+            axios.post("http://localhost:8089/article/node/articles", {
+              id: nodes[0].get("id"),
+              type: 1
+            }).then((res) => {
+              // 根据关系节点获取关系节点上关联的文章
+              this.setState({
+                showNodeArticle: res.data.articles
+              })
+            });
+
+            // 获取当前节点的注解
+            axios.post("http://localhost:8089/node/note/relation", {
+              id: nodes[0].get("id"),
+              type: 1
+            }).then((res) => {
+              // 根据关系节点获取关系节点上关联的文章
+              this.setState({
+                showNodeNote: res.data
+              })
+            });
+
           }
 
 
@@ -89,6 +115,7 @@ class App extends React.Component {
     this.getNodeList = this.getNodeList.bind(this);
     this.addNodeList = this.addNodeList.bind(this);
     this.onClose = this.onClose.bind(this);
+    this.onIncludedChange = this.onIncludedChange.bind(this);
     this.getNodeList(0, true);
   }
 
@@ -100,7 +127,8 @@ class App extends React.Component {
         <Header>Header</Header>
         <Content>
           <Row justify="space-around">
-            <Col span={6}>
+            <Col span={8}>
+
               <AutoComplete
                 dropdownMatchSelectWidth={252}
                 style={{ width: 300 }}
@@ -109,6 +137,15 @@ class App extends React.Component {
               >
                 <Input.Search size="large" placeholder="input here" enterButton onSearch={this.handleSearch} />
               </AutoComplete>
+
+            </Col>
+          </Row>
+          <Row justify="space-around">
+            <Col span={8}>
+              <Radio.Group onChange={this.onIncludedChange} value={this.state.included}>
+                <Radio value={true}>包含</Radio>
+                <Radio value={false}>关联</Radio>
+              </Radio.Group>
             </Col>
           </Row>
           <Graphin className="graphin" data={this.state.data}
@@ -147,27 +184,53 @@ class App extends React.Component {
             visible={this.state.visible}
           >
             <Space direction="vertical" className="drawer-space">
+
+              {
+                this.state.showNodeNote.length > 0 && <Text>本节点注解:</Text>
+              }
+              {
+                this.state.showNodeNote && this.state.showNodeNote.map((item, index) => {
+                  return <Text key={index.toString()}>{item.content} </Text>
+                })
+              }
+
+              {
+                this.state.showNodeArticle.length > 0 && <Text>本节点文章:</Text>
+              }
+              
+              {
+                this.state.showNodeArticle && this.state.showNodeArticle.map((article, index) => {
+                  return <Text key={index.toString()}><a target="_blank" href={article.url}>{article.title}</a> </Text>
+                })
+              }
+
               {
 
                 this.state.showNode.data.map((item, index) => {
 
                   return <Space direction="vertical" key={index.toString()} className="space">
-                      <Text> 关系名称：{item.relationRemark ? item.relation + '(' + item.relationRemark + ')' : item.relation}</Text>
-                      <Text >相关知识点:</Text >
-                      <div>
-                        {
-                          item.list.map((node, i) => {
-                            return <Tag key={i.toString()}>{node.nodeName}</Tag  >
-                          })
-                        }
-                      </div>
+                    <Text> 关系名称：{item.relationRemark ? item.relation + '(' + item.relationRemark + ')' : item.relation}</Text>
+                    <Text >相关知识点:</Text >
+                    <div>
                       {
-                        item.articles.length > 0 && <Text >相关文章</Text>
+                        item.list.map((node, i) => {
+                          return <Tag key={i.toString()}>{node.nodeName}</Tag  >
+                        })
                       }
-                      {item.articles.map((article, i) => {
-                        return <Text key={i.toString()}><a target="_blank" href={article.url}>{article.title}</a></Text>
-                      })}
-                    </Space>
+                    </div>
+                    {
+                      item.notes.length > 0 && <Text >相关注解</Text>
+                    }
+                    {item.notes.map((note, i) => {
+                      return <Text key={i.toString()}>{note.content}</Text>
+                    })}
+                    {
+                      item.articles.length > 0 && <Text >相关文章</Text>
+                    }
+                    {item.articles.map((article, i) => {
+                      return <Text key={i.toString()}><a target="_blank" href={article.url}>{article.title}</a></Text>
+                    })}
+                  </Space>
                 })
 
               }
@@ -181,6 +244,12 @@ class App extends React.Component {
 
   }
 
+  onIncludedChange(e) {
+    this.setState({
+      included: e.target.value,
+    })
+  }
+
   onClose() {
     this.setState({
       visible: false,
@@ -188,7 +257,7 @@ class App extends React.Component {
   };
 
   onSelect(value, option) {
-    this.getNodeList(option.id, true)
+    this.getNodeList(option.id, this.state.included)
   }
 
   handleSearch(value) {

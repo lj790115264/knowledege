@@ -15,5 +15,6 @@ public class RelateArticleRequest {
 
     private String articleId;
     private Long nodeId;
-
+    // 1 node 0 relation
+    private Integer type;
 }
