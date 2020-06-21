@@ -13,6 +13,8 @@ import {
 
 import axios from 'axios';
 import { Input } from 'antd';
+import {prefix} from './config.js'
+
 const { Header, Content } = Layout;
 const { Text } = Typography;
 class App extends React.Component {
@@ -65,7 +67,7 @@ class App extends React.Component {
           }
           if (nodes[0].get("model").type == "node") {
             // 获取当前节点的所有关系节点
-            axios.post("http://localhost:8089/node/relations", {
+            axios.post(prefix + "/node/relations", {
               id: nodes[0].get("id")
             }).then((res) => {
               console.log(nodes[0].get("model"))
@@ -80,7 +82,7 @@ class App extends React.Component {
             });
 
             // 获取当前节点的文章
-            axios.post("http://localhost:8089/article/node/articles", {
+            axios.post(prefix + "/article/node/articles", {
               id: nodes[0].get("id"),
               type: 1
             }).then((res) => {
@@ -91,7 +93,7 @@ class App extends React.Component {
             });
 
             // 获取当前节点的注解
-            axios.post("http://localhost:8089/node/note/relation", {
+            axios.post(prefix + "/node/note/relation", {
               id: nodes[0].get("id"),
               type: 1
             }).then((res) => {
@@ -261,7 +263,7 @@ class App extends React.Component {
   }
 
   handleSearch(value) {
-    axios.post("http://localhost:8089/node/list", {
+    axios.post(prefix + "/node/list", {
       content: value
     }).then((res) => {
       this.setState({
@@ -275,7 +277,7 @@ class App extends React.Component {
     })
   }
   addNodeList(id, isInclude) {
-    axios.post("http://localhost:8089/front", {
+    axios.post(prefix + "/front", {
       id: id,
       isInclude: isInclude
     }).then((res) => {
@@ -357,7 +359,7 @@ class App extends React.Component {
     return degree
   }
   getNodeList(id, isInclude) {
-    axios.post("http://localhost:8089/front", {
+    axios.post(prefix + "/front", {
       id: id,
       isInclude: isInclude
     }).then((res) => {
