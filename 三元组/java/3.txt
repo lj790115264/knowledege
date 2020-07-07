@@ -1,0 +1,30 @@
+https://blog.csdn.net/zl1zl2zl3/article/details/80776112 《一个线程两次调用start()方法会出现什么情况？》
+线程
+线程是系统调度的最小单元
+
+线程 包含 内核线程 用户线程
+
+进程 关联 线程
+
+线程 包含 NEW RUNNABLE BLOCKED WAITING TIMED_WAIT TERMINATED
+
+NEW
+表示线程被创建出来还没真正启动的状态
+在第二次调用start()方法的时候，线程可能处于终止或者其他（非NEW）状态，但是不论如何，都是不可以再次启动的。
+
+RUNNABLE
+表示该线程已经在JVM中执行，当然由于执行需要计算资源，它可能是正在运行，也可能还在等待系统分配给它CPU片段，在就绪队列里面排队。
+
+BLOCKED
+阻塞表示线程在等待Monitor lock。比如，线程试图通过synchronized去获取某个锁，但是其他线程已经独占了，那么当前线程就会处于阻塞状态。
+
+WAITING
+表示正在等待其他线程采取某些操作。
+
+TIMED_WAIT
+wait或join等方法的指定超时版本
+
+TERMINATED
+
+JVM 关联 守护线程
+当只有守护线程存在时,JVM将结束进程

@@ -105,7 +105,7 @@ export default {
             type: 1
           };
           axios
-            .post("http://localhost:8089/node/note/relation/add", obj)
+            .post("http://192.168.2.105:8089/node/note/relation/add", obj)
             .then(() => {
               this.noteList();
             })
@@ -137,7 +137,7 @@ export default {
         return;
       }
       axios
-        .post("http://localhost:8089/article/relate", {
+        .post("http://192.168.2.105:8089/article/relate", {
           articleId: this.selectedArticle.id,
           nodeId: this.dialogRow.id,
           type: 1,
@@ -156,7 +156,7 @@ export default {
       };
 
       axios
-        .post("http://localhost:8089/article/node/articles", obj)
+        .post("http://192.168.2.105:8089/article/node/articles", obj)
         .then(response => {
           this.articleData = response.data.articles;
           this.$forceUpdate();
@@ -173,7 +173,7 @@ export default {
       }
 
       axios
-        .post("http://localhost:8089/article/list", {
+        .post("http://192.168.2.105:8089/article/list", {
           content: this.articleContent
         })
         .then(response => {
@@ -190,7 +190,7 @@ export default {
         id: this.dialogRow.id
       };
       axios
-        .post("http://localhost:8089/node/note/relation", obj)
+        .post("http://192.168.2.105:8089/node/note/relation", obj)
         .then(response => {
           this.noteListData = response.data;
           this.$forceUpdate();
@@ -206,7 +206,7 @@ export default {
       }
 
       axios
-        .post("http://localhost:8089/node/list", {
+        .post("http://192.168.2.105:8089/node/list", {
           content: this.content
         })
         .then(response => {
@@ -221,7 +221,7 @@ export default {
         return;
       }
       axios
-        .post("http://localhost:8089/node/add", {
+        .post("http://192.168.2.105:8089/node/add", {
           name: this.name
         })
         .then(response => {

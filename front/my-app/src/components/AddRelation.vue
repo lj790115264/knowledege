@@ -161,7 +161,7 @@ export default {
       }
 
       axios
-        .post("http://localhost:8089/article/list", {
+        .post("http://192.168.2.105:8089/article/list", {
           content: this.articleContent
         })
         .then(response => {
@@ -183,7 +183,7 @@ export default {
         return;
       }
       axios
-        .post("http://localhost:8089/article/relate", {
+        .post("http://192.168.2.105:8089/article/relate", {
           articleId: this.selectedArticle.id,
           nodeId: relation,
           type: 0,
@@ -198,7 +198,7 @@ export default {
     },
     remoteMaterNode(query) {
       axios
-        .post("http://localhost:8089/node/list", {
+        .post("http://192.168.2.105:8089/node/list", {
           content: query
         })
         .then(response => {
@@ -210,7 +210,7 @@ export default {
     },
     remoteChildNode(query) {
       axios
-        .post("http://localhost:8089/node/list", {
+        .post("http://192.168.2.105:8089/node/list", {
           content: query
         })
         .then(response => {
@@ -229,7 +229,7 @@ export default {
       };
 
       axios
-        .post("http://localhost:8089/node/add/relation", obj)
+        .post("http://192.168.2.105:8089/node/add/relation", obj)
         .then(response => {
           this.childNodeList = response.data;
         })
@@ -246,7 +246,7 @@ export default {
       };
 
       axios
-        .post("http://localhost:8089/node/add/relation", obj)
+        .post("http://192.168.2.105:8089/node/add/relation", obj)
         .then(response => {
           this.childNodeList = response.data;
         })
@@ -260,7 +260,7 @@ export default {
         id: relation.relationId
       };
       axios
-        .post("http://localhost:8089/node/note/relation", obj)
+        .post("http://192.168.2.105:8089/node/note/relation", obj)
         .then(response => {
           relation.noteList = response.data;
           this.$forceUpdate();
@@ -283,7 +283,7 @@ export default {
             type: 0
           };
           axios
-            .post("http://localhost:8089/node/note/relation/add", obj)
+            .post("http://192.168.2.105:8089/node/note/relation/add", obj)
             .then(() => {
               this.noteList(relation);
             })
@@ -303,7 +303,7 @@ export default {
         id: this.form.masterId
       };
       axios
-        .post("http://localhost:8089/node/relations", obj)
+        .post("http://192.168.2.105:8089/node/relations", obj)
         .then(response => {
           this.masterRelations = response.data;
         })

@@ -64,7 +64,7 @@ export default {
       }
 
       axios
-        .post("http://localhost:8089/article/list", {
+        .post("http://192.168.2.105:8089/article/list", {
           content: this.content
         })
         .then((response) => {
@@ -79,7 +79,7 @@ export default {
         return;
       }
       axios
-        .post("http://localhost:8089/article/add", {
+        .post("http://192.168.2.105:8089/article/add", {
           title: this.title,
           url: this.url
         })
