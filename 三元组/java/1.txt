@@ -24,7 +24,7 @@ NIO 关联 零拷贝
 
 https://blog.csdn.net/qq_41936805/article/details/94905395 《synchronized和ReentrantLock有什么区别呢？》
 synchronized 关联 ReentrantLock
-synchronized语义和synchronized基本是相同 
+synchronized语义和ReentrantLock基本是相同
 synchronize只能是非公平的,ReentrantLock是粒度更细的synchronize,可以带超时的获取锁尝试,中断请求
 
 线程安全 包含（特性） 原子性 可见性 有序性

@@ -28,3 +28,34 @@ TERMINATED
 
 JVM 关联 守护线程
 当只有守护线程存在时,JVM将结束进程
+
+
+https://blog.csdn.net/weixin_44240370/article/details/96911182  《什么情况下Java程序会产生死锁？如何定位、修复？》
+
+死锁
+
+
+死锁 关联 jstack ThreadMXBean
+利用jstack 查看线程状态, 等待锁对象, 对比持有状态\
+
+死锁 关联 Monitor
+
+死锁 关联 银行家算法
+
+https://www.jianshu.com/p/a47c45cf49c7 《银行家算法的模拟和实现》
+银行家算法
+
+https://www.cnblogs.com/xushuyi/articles/9208980.html 《Java并发包提供了哪些并发工具类？》
+java并发包
+java.util.concurrent
+
+java并发包 包含 同步结构 线程安全的容器 并发队列 Executor
+
+同步结构 包含 CountDownLatch CyclicBarrier Sempahore
+
+线程安全的容器 包含 ConcurrentHashMap ConcunrrentSkipListMap CopyOnWriteArrayList
+
+并发队列 包含 ArrayBlockingQueue SynchronousQueue PriorityBlockingQueue
+
+CountDownLatch 关联 CyclicBarrier
+CountDownLatch

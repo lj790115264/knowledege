@@ -34,7 +34,7 @@ gc回收前调用的方法
 
 
 https://www.jianshu.com/p/86efa167a627 《强引用、软引用、弱引用、幻象引用有什么区别》
-对象引用 类型包含 强引用 软引用 幻想引用
+对象引用 类型包含 强引用 软引用 幻象引用
 
 
 https://blog.csdn.net/yiguang_820/article/details/93849455 《String、StringBuffer、StringBuilder有什么区别》
@@ -47,7 +47,7 @@ StringBuffer使用synchronized保证线程安全
 
 String 关联 StringBuffer
 String内部的char[] 是final的,拼接的时候频繁操作会产生大量无用对象 
-StringBuffer 内部的char[] 不是final修饰的)
+StringBuffer 内部的char[] 不是final修饰的
 
 
 https://www.jianshu.com/p/e20dab96df8a 《动态代理是基于什么原理》
