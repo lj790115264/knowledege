@@ -55,7 +55,31 @@ java并发包 包含 同步结构 线程安全的容器 并发队列 Executor
 
 线程安全的容器 包含 ConcurrentHashMap ConcunrrentSkipListMap CopyOnWriteArrayList
 
-并发队列 包含 ArrayBlockingQueue SynchronousQueue PriorityBlockingQueue
+阻塞队列 包含 ArrayBlockingQueue SynchronousQueue PriorityBlockingQueue
 
 CountDownLatch 关联 CyclicBarrier
-CountDownLatch
+CountDownLatch 不可重用 CyclicBarrier可循环使用
+CountDownLatch分为await和countDown两个方法， 所以栅栏可以放在任何地方。CyclicBarrier 只有await方法，所以逻辑只能在子线程中
+
+
+https://blog.csdn.net/qq541005640/article/details/81877586《并发包中的ConcurrentLinkedQueue和LinkedBlockingQueue有什么区别？》
+java并发包 包含 Concurrent CopyOnWrite Blocking
+Concurrent lock-free(无锁编程) 提供弱一致性
+Blocking 基于锁实现
+
+并发队列 包含 非阻塞队列 阻塞队列
+非阻塞队列 就是 ConcurrentLinkedQueue，而阻塞队列则是实现了BlockingQueue的队列
+
+阻塞队列 包含 有界阻塞队列 无界阻塞队列
+
+有界阻塞队列 包含 ArrayBlockingQueue LinkedBlockingQueue
+LinkedBlockingQueue因默认大小为 Integer.Max 所以是无界队列, 但内部实现是有界队列
+
+无界阻塞队列 包含 PriorityBlockingQueue DelayedQueue LinkedTransferQueue
+
+
+
+
+
+
+
