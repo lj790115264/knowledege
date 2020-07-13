@@ -1,0 +1,46 @@
+https://blog.csdn.net/qq541005640/article/details/81878924 《AtomicInteger底层实现原理是什么？如何在自己的产品代码中应用CAS操作？》
+
+lock-free 包含 Atomic VarHandle AtomicFieldUpdater
+VarHandle java9提供，推荐使用
+
+Atomic 关联 CAS
+CAS unsafe调用底层 cpu指令 如 x86架构cmpxchg, 精简指令集load and reserve和store conditional 属于轻量级操作
+
+CAS 关联 AtomicStampedReference AtomicReference
+ABA 问题  AtomicStampedReference比AtomicReference多保存一个时间戳
+
+AQS
+AbstractQueuedSynchronizer,利用 AQS实现同步结构 需要要实现 acquire, release
+AQS 包含 一个 volatile 的state 一个FIFO的等待线程队列(Node链表) 和 其他CAS的操作方法
+关键方法 tryAcquire 和 acquireQueued
+tryAcquire 尝试获取锁,实现的实现逻辑由子类实现
+acquireQueued 在tryAcquire失败后 addWaiter创建一个排他节点，并进入排队竞争模式:此时若非头节点, 判断节点状态waitStatus,若需要等待调用LockSupport.park进入等待
+
+AQS 关联 LockSupport.park
+调用 LockSupport.park 使线程进入等待状态
+LockSupport.park(thread) 不释放锁 park在unpark之前之后调用都不会影响 park的结果
+
+ReentrantLock 关联 AQS
+ReentrantLock 中的 sync对象继承自AQS
+
+ReentrantLock 包含 FairSync NonfairSync
+公平锁实现和非公平锁的唯一区别是 公平锁在判断 无进程占用锁(state=0)时,会调用 hasQueuedPredecessors判断当前队列中是否有进程
+
+
+https://zhuanlan.zhihu.com/p/142273961 《请介绍类加载过程，什么是双亲委派模型》
+类加载
+类加载包含三个主要步骤：加载、链接、初始化
+加载: 将不同类型的文件加载进jvm
+链接: 1.验证(验证文件格式是否符合jvm规范). 2.准备(初始化类及其静态变量,侧重于申请内存).3.解析(将符号引用替换为真实内存的直接引用)
+初始化阶段: 类初始化的代码,包含静态变量的赋值,静态代码块的执行.
+
+类加载 关联 双亲委派机制
+类加载机制有三个基本特征: 双亲委派,可见性(父类加载的类对子类可见),单一性(一个类型子父之间只会加载一次)
+Bootstrap Class-Loader, Extension or Ext Class-Loader, Application or App Class-Loader
+
+https://blog.csdn.net/weixin_33885676/article/details/91910242 《Maven之依赖配置-关于依赖传递、依赖范围和类加载器》
+
+类加载 关联 tomcat类加载
+违反双亲委派. 表现为 用户定义的类高于web容器的类 当WebAppClassLoader处理时,先查询webapp下有没有,再查CommonClassLoader和AppClassLoader.
+
+
