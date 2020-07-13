@@ -79,7 +79,19 @@ LinkedBlockingQueue因默认大小为 Integer.Max 所以是无界队列, 但内�
 
 
 
+https://blog.csdn.net/qq541005640/article/details/81878388 《Java并发类库提供的线程池有哪几种？ 分别有什么特点？》
+
+线程池 包含 Executors  ExecutorService
+IO密集型 线程数 = CPU 核数 × （1 + 平均等待时间 / 平均工作时间）  计算密集型 CPU 核数 + 1
+
+ExecutorService 包含 ThreadPoolExecutor ForkJoinPool ScheduledThreadPoolExecutor
+
+ThreadPoolExecutor 关联(继承) ScheduledThreadPoolExecutor
+
+Executors 包含 newCachedThreadPool newFixedThreadPool newSingleThreadExecutor newSingleThreadScheduledExecutor newWorkStealingPool
+
+newWorkStealingPool 关联 work-steeling
 
 
-
-
+https://segmentfault.com/a/1190000008140126 《Java 多线程（5）：Fork/Join 型线程池与 Work-Stealing 算法》
+ForkJoinPool 关联 work-steeling

@@ -44,3 +44,61 @@ https://blog.csdn.net/weixin_33885676/article/details/91910242 《Maven之依赖
 违反双亲委派. 表现为 用户定义的类高于web容器的类 当WebAppClassLoader处理时,先查询webapp下有没有,再查CommonClassLoader和AppClassLoader.
 
 
+https://time.geekbang.org/column/article/10076 《有哪些方法可以在运行时动态生成一个Java类？》
+
+ASM 关联 字节码
+封装再JDK内部实现中, 以操作底层jvm指令来操作字节码
+
+cglib 关联 ASM
+底层封装了ASM
+
+
+https://blog.csdn.net/qq_35016215/article/details/98867152 《jdk动态代理为什么必须是基于接口实现的？》
+
+jdk动态代理 关联 字节码
+jdk动态代理的实现 基于 Proxy 类调用 ProxyGenerator 生成字节码文件,最后调用native defineClass0方法加载类。其生成的class对象已经继承自Proxy类,而java是单继承的,
+所以子类无法再继承一个类,只能实现接口
+
+
+谈谈JVM内存区域的划分，哪些区域可能发生OutOfMemoryError? 《谈谈JVM内存区域的划分，哪些区域可能发生OutOfMemoryError?》
+
+运行时数据区域 包含 程序计数器 栈 堆
+程序计数器和栈为线程私有, 堆为线程共享
+
+栈 包含 本地方法栈 Java虚拟机栈
+
+堆 包含 GC堆 方法区
+
+方法区 包含 运行时常量池
+
+GC堆 包含 新生代 老年代
+新生代 为 Eden + Survivor(from, to)
+
+
+https://blog.csdn.net/qq541005640/article/details/81987435 如何监控和诊断JVM堆内和堆外内存使用？
+
+GC堆
+
+
+https://www.jianshu.com/p/d686e108d15f JVM学习（7）Stop-The-World
+
+垃圾回收 包含 Stop-The-World
+为了保证引用更新的正确性, 防止在gc的时候会有新的对象创建出来并关联标记为删除的对象上
+
+
+https://blog.csdn.net/qq541005640/article/details/81988512 Java常见的垃圾收集器有哪些？
+
+垃圾收集器 包含 Serial GC   ParNew GC   CMS    Parallel GC    G1 GC
+Serial GC 新生代使用复制算法  老年代使用 标记-整理 单线程gc
+ParNew GC 新生代 Serial GC的多线程版本,配合老年代CMS GC
+CMS GC    老年代 基于标记-清除算法
+Parallel GC 新生代老年代 吞吐量优先的 GC
+G1 GC   region
+
+垃圾回收算法 引用计数 可达性分析
+java没有采用引用计数, 很难处理循环引用的关系
+
+垃圾回收算法 复制算法 标记清除算法 标记整理算法
+
+
+
